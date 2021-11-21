@@ -184,28 +184,53 @@ void CountConnectedComponents() {
   cout << "\nNumber of Connected Components: " << CountConnectedComponents(graph) << endl;
 }
 
-int LargestComponent(unordered_map<int, vector<int>>&graph, bool dfs = true) {
+
+int LargestComponetDFS(unordered_map<int, vector<int>>&graph, int source, unordered_set<int>& visited) {
+  if(visited.find(source) != visited.end()) {
+    return 0;
+  }
+
+  visited.insert(source);
+  int size = 1;
+  vector<int> children = graph[source];
+  for(auto child: children) {
+    size += LargestComponetDFS(graph, child, visited);
+  }
+  return size;
+}
+int LargestComponetBFS(unordered_map<int, vector<int>>&graph, int source, unordered_set<int>& visited) {
+  return 0;
+}
+
+int LargestComponet(unordered_map<int, vector<int>>&graph, bool dfs = true) {
   unordered_set<int> visited;
   int maxComponentSize = INT32_MIN;
   int currentComponentSize = 0;
-  for(auto node: graph) {
+  for(auto entry: graph) {
     if(dfs) {
-      currentComponentSize = LargestComponetDFS();      
+      currentComponentSize =  LargestComponetDFS(graph, entry.first, visited);      
     } else {
-      currentComponentSize  = LargestComponetBFS();
+      currentComponentSize  = LargestComponetBFS(graph, entry.first, visited);
     }
     maxComponentSize = max(maxComponentSize, currentComponentSize);
   }
   return maxComponentSize;
 }
 
-void LargestComponent() {
-
+void LargestComponet() {
+  unordered_map<int, vector<int>> graph = unordered_map<int, vector<int>>();
+  graph[0] =  vector<int>{8,1,5};
+  graph[1] =  vector<int>{0};
+  graph[2] =  vector<int>{3,4};
+  graph[3] =  vector<int>({2,4});
+  graph[4] =  vector<int>({3,2});
+  graph[5] =  vector<int>({0,8});
+  graph[8] =  vector<int>({0,5});
+  cout << "\nLargest Connected Component: " << LargestComponet(graph, false) << endl;
 }
 
 int main() {
   CountConnectedComponents();
-  LargestComponent();
-  ShortestPath();
+  LargestComponet();
   return 0;
 }
